@@ -1,27 +1,24 @@
 (ns seqpeek.core
-  (:require [clojure.cor.reducuers :as r])
-  (:import [org.biojava3.sequencing.io.fastq FastqReader IlluminaFastqReader SangerFastqReader]
-           [java.io File])
+  ;; (:require [clojure.core.reducuers :as r])
+  (:import java.io.File
+           (org.biojava3.sequencing.io.fastq FastqReader IlluminaFastqReader SangerFastqReader))
   (:gen-class)) 
 
-(defmulti get-reader identity)
-(defmethod get-reader :illumina (IlluminaFastqReader.))
-(defmethod get-reader :sanger (SangerFastqReader.))
+(defn fastq-seq
+  "Returns a sequence view of the FASTQ reader."
+  [reader file]
+  (seq (.read reader file )))
 
-(defmulti count-reads
-  "Returns the number of reads in a sequencing data file"
-  class)
-
-(defmethod count-reads File [file]
-  (let [reader (IlluminaFastqReader.)]
-    (count (seq (.read reader file)))))
-
-(defmethod count-reads String [filename]
-  (count-reads (File. filename)))
+(defn sequences
+  "Returns a lazy sequence of just the raw sequence data in the FASTQ"
+  [reader file]
+  (map #(.getSequence %) (fastq-seq reader file)))
 
 (defn count-long-reads 
-  [file n]
-  (reduce + (r/filter #((> n .length (.getSequence %))) (seq (.read reader file)))))
+  [reader file n]
+  (count (filter
+          #(<= n (count %))
+         (sequences reader file))))
 
 (defn -main
   "The main entry point for seqpeek"
@@ -31,6 +28,12 @@
 
   ;; delegate base on command passed by the user
   (case command
-    "count-reads" (println (count-reads (first args)))
+    "count-reads" (println
+                   (count (fastq-seq (IlluminaFastqReader.)
+                                     (File. (first args)))))
+    "count-long-reads" (println
+                        (count-long-reads (IlluminaFastqReader.)
+                                          (File. (first args))
+                                          (Integer/parseInt (second args))))
     (println (str "Unknown command: " (first args)))))
 
