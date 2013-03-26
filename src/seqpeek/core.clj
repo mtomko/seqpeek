@@ -1,4 +1,5 @@
 (ns seqpeek.core
+  (:require [clojure.cor.reducuers :as r])
   (:import [org.biojava3.sequencing.io.fastq FastqReader IlluminaFastqReader]
            [java.io File])
   (:gen-class)) 
@@ -13,6 +14,10 @@
 
 (defmethod count-reads String [filename]
   (count-reads (File. filename)))
+
+(defn count-long-reads 
+  [file n]
+  (reduce + (r/filter #((> n .length (.getSequence %))) (seq (.read reader file)))))
 
 (defn -main
   "The main entry point for seqpeek"
