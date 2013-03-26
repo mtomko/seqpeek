@@ -1,8 +1,12 @@
 (ns seqpeek.core
   (:require [clojure.cor.reducuers :as r])
-  (:import [org.biojava3.sequencing.io.fastq FastqReader IlluminaFastqReader]
+  (:import [org.biojava3.sequencing.io.fastq FastqReader IlluminaFastqReader SangerFastqReader]
            [java.io File])
   (:gen-class)) 
+
+(defmulti get-reader identity)
+(defmethod get-reader :illumina (IlluminaFastqReader.))
+(defmethod get-reader :sanger (SangerFastqReader.))
 
 (defmulti count-reads
   "Returns the number of reads in a sequencing data file"
