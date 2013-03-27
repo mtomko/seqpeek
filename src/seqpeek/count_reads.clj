@@ -1,4 +1,4 @@
-(ns seqpeek.count
+(ns seqpeek.count-reads
   (:require [seqpeek.seq])
   (:use [clojure.tools.cli :only[cli]]))
 
@@ -8,7 +8,7 @@
    ["-m" "--max-length" "Filter reads by maximum length" :parse-fn #(Integer. %)]
    ["-h" "--help" "Display usage and quit" :default false]))
 
-(defn count-cmd
+(defn count-reads
   "The entry point for the count function."
   [dialect args]
   (let [[options files banner] (cli args specs)]

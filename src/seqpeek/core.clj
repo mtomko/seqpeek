@@ -1,6 +1,6 @@
 (ns seqpeek.core
-  (:require [seqpeek.count])
-  (:use [seqpeek.seq])
+  (:use [seqpeek.count-reads]
+        [seqpeek.seq])
   (:import java.io.File
            (org.biojava3.sequencing.io.fastq FastqReader
                                              IlluminaFastqReader
@@ -17,7 +17,7 @@
 
   ;; delegate base on command passed by the user
   (case command
-    "count" (seekpeek.count/count-cmd dialect args)
+    "count" (count-reads dialect args)
     "count-reads" (println 
                    (count (fastq-seq (get-reader dialect)
                                      (File. (first args)))))
