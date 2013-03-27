@@ -1,11 +1,7 @@
 (ns seqpeek.core
   (:use [seqpeek.count-reads]
         [seqpeek.seq])
-  (:import java.io.File
-           (org.biojava3.sequencing.io.fastq FastqReader
-                                             IlluminaFastqReader
-                                             SangerFastqReader
-                                             SolexaFastqReader))
+  (:import java.io.File)
   (:gen-class)) 
 
 (declare main)
@@ -14,15 +10,13 @@
   [command dialect & args]
   ;; work around dangerous default behaviour in Clojure
   (alter-var-root #'*read-eval* (constantly false))
-
-  ;; delegate base on command passed by the user
-  (case command
+  (case (clojure.string/lower-case command)
     "count" (count-reads dialect args)
     "count-reads" (println 
-                   (count (fastq-seq (get-reader dialect)
+                   (count (fastq-seq (fastq-reader dialect)
                                      (File. (first args)))))
     "count-long-reads" (println
-                        (count-long-reads (IlluminaFastqReader.)
+                        (count-long-reads (fastq-reader dialect)
                                           (File. (first args))
                                           (Integer/parseInt (second args))))
     (println (str "Unknown command: " (first args)))))

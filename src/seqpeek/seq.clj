@@ -20,7 +20,7 @@
 (defn fastq-seq
   "Returns a sequence view of the FASTQ reader."
   [reader file]
-  (seq (.read reader file)))
+  (lazy-seq (.read reader file)))
 
 (defn sequences
   "Returns a lazy sequence of just the raw sequence data in the FASTQ"
@@ -30,6 +30,7 @@
 (defn count-long-reads 
   [reader file n]
   (count (filter
-          #(<= n (count %))
-         (sequences reader file))))
+          #(<= n (count (.getSequence %)))
+          (fastq-seq reader file))))
+
 
