@@ -7,7 +7,7 @@
 
 (defn sequences
   [filename]
-  (->> filename file-seq-over fastq-sequences))
+  (-> filename make-line-seq fastq-sequences))
 
 (defn -main
   "The main entry point for seqpeek"
