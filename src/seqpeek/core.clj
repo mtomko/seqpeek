@@ -9,7 +9,6 @@
   [filename]
   (->> filename file-seq-over fastq-sequences))
 
-(declare main)
 (defn -main
   "The main entry point for seqpeek"
   [command dialect & args]
