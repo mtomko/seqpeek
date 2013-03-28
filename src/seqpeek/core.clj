@@ -1,8 +1,17 @@
 (ns seqpeek.core
-  (:use [seqpeek.count-reads]
-        [seqpeek.seq])
-  (:import java.io.File)
+  (:use seqpeek.count-reads
+        seqpeek.fastq
+        seqpeek.file
+        seqpeek.seq)
   (:gen-class)) 
+
+(defn sequences2
+  [filename]
+  (fastq-seq (fastq-sequences (file-seq-over filename))))
+
+(defn sequences
+  [filename]
+  (->> filename file-seq-over fastq-sequences))
 
 (declare main)
 (defn -main
@@ -13,11 +22,10 @@
   (case (clojure.string/lower-case command)
     "count" (count-reads dialect args)
     "count-reads" (println 
-                   (count (fastq-seq (fastq-reader dialect)
-                                     (File. (first args)))))
+                   (count (sequences (first args))))
+
     "count-long-reads" (println
-                        (count-long-reads (fastq-reader dialect)
-                                          (File. (first args))
+                        (count-long-reads (sequences (first args))
                                           (Integer/parseInt (second args))))
     (println (str "Unknown command: " (first args)))))
 
