@@ -15,3 +15,16 @@
        (for [[id dna _ qual] (partition 4 coll)] 
          [id dna qual])))
 
+(defn phred-atoi
+  "Returns the phred-atoi function appropriate for the given
+  FASTQ dialect."
+  [dialect]
+  (letfn [(phred-atoi-fn [base qual]
+            (- (int qual) base))]
+    (case dialect
+      :illumina (partial phred-atoi-fn 64)
+      :iontorrent (partial phred-atoi-fn 33)
+      :sanger (partial phred-atoi-fn 33)
+      :solexa (partial phred-atoi-fn 64)
+      (partial phred-atoi-fn 64))))
+

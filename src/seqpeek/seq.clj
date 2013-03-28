@@ -6,5 +6,3 @@
   (count 
    (filter #(<= n (count %)) coll)))
 
-
-
