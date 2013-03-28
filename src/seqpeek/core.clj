@@ -5,10 +5,6 @@
         seqpeek.seq)
   (:gen-class)) 
 
-(defn sequences2
-  [filename]
-  (fastq-seq (fastq-sequences (file-seq-over filename))))
-
 (defn sequences
   [filename]
   (->> filename file-seq-over fastq-sequences))
