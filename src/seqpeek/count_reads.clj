@@ -8,8 +8,8 @@
   "Argument parser for the count-reads command."
   [args]
   (cli args
-       ["-n" "--min-length" "Filter reads by minimum length" :parse-fn #(Integer. %)]
-       ["-m" "--max-length" "Filter reads by maximum length" :parse-fn #(Integer. %)]
+       ["-n" "--min-length" "Filter reads by minimum length" :parse-fn #(Integer/parseInt %)]
+       ["-m" "--max-length" "Filter reads by maximum length" :parse-fn #(Integer/parseInt %)]
        ["-h" "--help" "Display usage and quit" :flag true]))
 
 (defn- fastq-seq-over
@@ -21,9 +21,9 @@
   [options]
   (let [[ub, lb] [(:min-length options) (:max-length options)]]
     (cond (and (nil? ub) (nil? lb)) (fn [_] true)
-          (nil? lb) (fn [x] (< x ub))
-          (nil? ub) (fn [x] (>= x lb))
-          :else (fn [x] (and (< x ub) (>= x lb))))))
+          (nil? lb) (fn [x] (< (count x) ub))
+          (nil? ub) (fn [x] (>= (count x) lb))
+          :else (fn [x] (and (< (count x) ub) (>= (count x) lb))))))
 
 (defn- count-reads-for-file
   "Counts reads in the input file matching the provided filter."
