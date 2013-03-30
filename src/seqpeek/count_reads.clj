@@ -1,8 +1,8 @@
 (ns seqpeek.count-reads
-  (:require seqpeek.fastq
-            seqpeek.file
-            seqpeek.seq)
-  (:use [clojure.tools.cli :only[cli]]))
+  (:use [clojure.tools.cli :only[cli]]
+        [incanter core io stats charts]
+        [seqpeek.fastq :only [fastq-seq-over]]
+        [seqpeek.file :only [make-line-seq]]))
 
 (defn- parse-args
   "Argument parser for the count-reads command."
@@ -12,14 +12,10 @@
        ["-m" "--max-length" "Filter reads by maximum length" :parse-fn #(Integer/parseInt %)]
        ["-h" "--help" "Display usage and quit" :flag true]))
 
-(defn- fastq-seq-over
-  [filename]
-  (-> filename seqpeek.file/make-line-seq seqpeek.fastq/fastq-seq))
-
 (defn- build-filter
   "Creates a filter predicate based on the provided options."
   [options]
-  (let [[ub, lb] [(:min-length options) (:max-length options)]]
+  (let [[lb ub] [(:min-length options) (:max-length options)]]
     (cond (and (nil? ub) (nil? lb)) (fn [_] true)
           (nil? lb) (fn [x] (< (count x) ub))
           (nil? ub) (fn [x] (>= (count x) lb))
@@ -28,8 +24,8 @@
 (defn- count-reads-for-file
   "Counts reads in the input file matching the provided filter."
   [filename seqfilter]
-  (let [fseq (fastq-seq-over filename)
-        sequences (map :seq fseq)]
+  (let [rec (fastq-seq-over filename)
+        sequences (map :seq rec)]
     (count (filter seqfilter sequences))))
 
 (defn count-reads
@@ -40,7 +36,10 @@
       (println banner)
       (System/exit 0))
     (let [seqfilter (build-filter options)
-          print-filenames (> 1 (count files))]
+          print-filenames (<= 1 (count files))]
       (doseq [filename files]
-        (when print-filenames println (str filename ": "))
-        (println  (str "\t" (count-reads-for-file filename seqfilter)))))))
+        (when print-filenames
+          (println (str filename ": "))
+          (print "\t"))
+        (println (count-reads-for-file filename seqfilter))))))
+
