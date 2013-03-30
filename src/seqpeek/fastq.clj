@@ -15,6 +15,10 @@
        (for [[id dna _ qual] (partition 4 coll)] 
          [id dna qual])))
 
+(defn- fastq-seq-over
+  [filename]
+  (-> filename make-line-seq fastq-seq))
+
 (defn phred-atoi
   "Returns the phred-atoi function appropriate for the given
   FASTQ dialect."

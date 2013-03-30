@@ -6,21 +6,24 @@ A simple library for exploring next-gen sequencing data files.
 
 Download from http://github.com/mtomko/seqpeek
 
+Run:
+    $ lein uberjar
+    $ make-sh.sh
+
 ## Usage
 
-    $ java -jar seqpeek-0.1.0-standalone.jar [args]
+    $ java -jar seqpeek-0.1.0-standalone.jar <command> [args] [files]
 
 ## Options
 
-Not implemented yet.
+###count
+Counts reads based on simple criteria. Currently supports length-based
+filters only.
 
 ## Examples
 
-None.
-
-### Bugs
-
-Everything.
+    $ seqpeeq count -n 54 test.fastq
+    3828933
 
 ## License
 
