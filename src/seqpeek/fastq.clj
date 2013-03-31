@@ -15,7 +15,7 @@
        (for [[id dna _ qual] (partition 4 coll)] 
          [id dna qual])))
 
-(defn- fastq-seq-over
+(defn fastq-seq-over
   [filename]
   (-> filename make-line-seq fastq-seq))
 
