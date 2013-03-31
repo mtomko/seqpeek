@@ -1,6 +1,6 @@
 (ns seqpeek.count-reads
-  (:use [clojure.tools.cli :only[cli]]
-        [incanter core io stats charts]
+  (:use [clojure.tools.cli :only [cli]]
+        [seqpeek.command]
         [seqpeek.fastq :only [fastq-seq-over]]
         [seqpeek.file :only [make-line-seq]]))
 
@@ -28,18 +28,18 @@
         sequences (map :seq rec)]
     (count (filter seqfilter sequences))))
 
-(defn count-reads
-  "The entry point for the count-reads command."
-  [args]
-  (let [[options files banner] (parse-args args)]
-    (when (:help options)
-      (println banner)
-      (System/exit 0))
-    (let [seqfilter (build-filter options)
-          print-filenames (<= 1 (count files))]
+(defn- count-reads-body
+  "The body of the count-reads command."
+  [options files body]
+  (let [seqfilter (build-filter options)
+          print-filenames (< 1 (count files))]
       (doseq [filename files]
         (when print-filenames
           (println (str filename ": "))
           (print "\t"))
-        (println (count-reads-for-file filename seqfilter))))))
+        (println (count-reads-for-file filename seqfilter)))))
 
+(defn count-reads
+  "The entry point for the count-reads command."
+  [args]
+  (command parse-args args count-reads-body))
