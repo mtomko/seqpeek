@@ -14,17 +14,16 @@
 
 (defn- read-length-hist
   [filename]
-  (frequencies (map (comp count :seq)
-                    (fastq-seq-over filename))))
+  (map (comp count :seq)
+       (fastq-seq-over filename)))
+  ;; (frequencies ))
 
 (defn- plot-body
   "The body of the plot command."
   [options files body]
   (doseq [filename files]
     (view (histogram
-           (read-length-hist filename)
-           :x-label "Bases"
-           :y-label "Frequency")))
+           (read-length-hist filename))))
   (read-line))
 
 (defn plot
