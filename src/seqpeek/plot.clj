@@ -12,18 +12,21 @@
        ["-l" "--read-length" "Plot read lengths" :flag false]
        ["-h" "--help" "Display usage and quit" :flag true]))
 
-(defn- read-length-hist
+(defn read-length-hist
   [filename]
   (map (comp count :seq)
        (fastq-seq-over filename)))
-  ;; (frequencies ))
 
+;; this works interactively, but not in the embedded from - why?
+;; check out
+;; http://stackoverflow.com/questions/8892891/how-to-display-an-incanter-graph-in-jpanel/8895013#8895013
 (defn- plot-body
   "The body of the plot command."
   [options files body]
   (doseq [filename files]
     (view (histogram
-           (read-length-hist filename))))
+           (read-length-hist filename)))
+    (read-line))
   (read-line))
 
 (defn plot
