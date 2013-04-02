@@ -1,6 +1,7 @@
 # seqpeek
 
-A simple library for exploring next-gen sequencing data files.
+A simple tool for exploring next-gen sequencing data files. Currently supports only FASTQ files, 
+but support is planned for other file formats.
 
 ## Installation
 
@@ -20,10 +21,18 @@ Run:
 Counts reads based on simple criteria. Currently supports length-based
 filters only.
 
+###plot
+Plots read statistics. Currently supports only length-based plots. This
+can be useful for sequencing processes that generate reads of variable
+length.
+
 ## Examples
 
-    $ seqpeeq count -n 54 test.fastq
+    $ seqpeek count -n 54 test.fastq
     3828933
+    
+    # plot a histogram of read lengths
+    $ seqpeek plot -l test.fastq
 
 ## License
 
