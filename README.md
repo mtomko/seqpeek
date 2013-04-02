@@ -1,6 +1,6 @@
 # seqpeek
 
-A simple library for exploring next-gen sequencing data files. Currently supports only FASTQ files, 
+A simple tool for exploring next-gen sequencing data files. Currently supports only FASTQ files, 
 but support is planned for other file formats.
 
 ## Installation
