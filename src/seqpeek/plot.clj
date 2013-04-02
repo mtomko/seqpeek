@@ -9,7 +9,7 @@
   "Argument parser for the count-reads command."
   [args]
   (cli args
-       ["-l" "--read-length" "Plot read lengths" :flag false]
+       ["-l" "--read-length" "Plot read lengths" :flag true]
        ["-h" "--help" "Display usage and quit" :flag true]))
 
 (defn read-length-hist
@@ -17,17 +17,15 @@
   (map (comp count :seq)
        (fastq-seq-over filename)))
 
-;; this works interactively, but not in the embedded from - why?
-;; check out
-;; http://stackoverflow.com/questions/8892891/how-to-display-an-incanter-graph-in-jpanel/8895013#8895013
 (defn- plot-body
   "The body of the plot command."
   [options files body]
   (doseq [filename files]
     (view (histogram
-           (read-length-hist filename)))
-    (read-line))
-  (read-line))
+           (read-length-hist filename)
+           :x-label "read length (nt)"
+           :y-label "frequency"
+           :title   (str "Read Lengths for " filename)))))
 
 (defn plot
   "The entry point for the plot command."
