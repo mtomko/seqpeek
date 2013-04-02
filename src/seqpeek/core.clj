@@ -1,18 +1,8 @@
 (ns seqpeek.core
-  (:import [org.biojava3.sequencing.io.fastq FastqReader IlluminaFastqReader]
-           [java.io File])
+  (:use [clojure.string :only [lower-case]]
+        seqpeek.count-reads
+        seqpeek.plot)
   (:gen-class)) 
-
-(defmulti count-reads
-  "Returns the number of reads in a sequencing data file"
-  class)
-
-(defmethod count-reads File [file]
-  (let [reader (IlluminaFastqReader.)]
-    (count (seq (.read reader file)))))
-
-(defmethod count-reads String [filename]
-  (count-reads (File. filename)))
 
 (defn -main
   "The main entry point for seqpeek"
@@ -20,8 +10,8 @@
   ;; work around dangerous default behaviour in Clojure
   (alter-var-root #'*read-eval* (constantly false))
 
-  ;; delegate base on command passed by the user
-  (case command
-    "count-reads" (println (count-reads (first args)))
-    (println (str "Unknown command: " (first args)))))
-
+  ;; decipher the command and dispatch to the appropriate authority
+  (case (lower-case command)
+    "count" (count-reads args)
+    "plot"  (plot args)
+    (println (str "Unknown command: " command))))
