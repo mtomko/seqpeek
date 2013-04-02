@@ -12,23 +12,28 @@
        ["-m" "--max-length" "Filter reads by maximum length" :parse-fn #(Integer/parseInt %)]
        ["-h" "--help" "Display usage and quit" :flag true]))
 
-(defn- build-filter
+(defn build-filter
   "Creates a filter predicate based on the provided options."
   [options]
   (let [[lb ub] [(:min-length options) (:max-length options)]]
     (cond (and (nil? ub) (nil? lb)) (fn [_] true)
-          (nil? lb) (fn [x] (< (count x) ub))
+          (nil? lb) (fn [x] (<= (count x) ub))
           (nil? ub) (fn [x] (>= (count x) lb))
-          :else (fn [x] (and (< (count x) ub) (>= (count x) lb))))))
+          :else (fn [x] (and (<= (count x) ub) (>= (count x) lb))))))
 
-(defn- count-reads-for-file
+(defn count-matching-reads
+  "Counts reads in the sequence matching the provided filter"
+  [pred coll]
+  (count (filter pred coll)))
+
+(defn- count-matching-reads-in-file
   "Counts reads in the input file matching the provided filter."
-  [filename seqfilter]
+  [seqfilter filename]
   (let [rec (fastq-seq-over filename)
         sequences (map :seq rec)]
-    (count (filter seqfilter sequences))))
+    (count-matching-reads seqfilter sequences)))
 
-(defn- count-reads-body
+(defn- count-reads*
   "The body of the count-reads command."
   [options files body]
   (let [seqfilter (build-filter options)
@@ -37,9 +42,9 @@
         (when print-filenames
           (println (str filename ": "))
           (print "\t"))
-        (println (count-reads-for-file filename seqfilter)))))
+        (println (count-matching-reads-in-file seqfilter filename)))))
 
 (defn count-reads
   "The entry point for the count-reads command."
   [args]
-  (command parse-args args count-reads-body))
+  (command parse-args args count-reads*))
