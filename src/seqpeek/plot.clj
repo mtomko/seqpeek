@@ -9,10 +9,11 @@
   "Argument parser for the count-reads command."
   [args]
   (cli args
-       ["-l" "--read-length" "Plot read lengths" :flag true]
+       ["-l" "--read-length" "Plot read length histogram" :flag true]
+       ["-o" "--output-file" "Output file" :flag false]
        ["-h" "--help" "Display usage and quit" :flag true]))
 
-(defn read-length-hist
+(defn read-lengths
   [filename]
   (map (comp count :seq)
        (fastq-seq-over filename)))
@@ -21,11 +22,14 @@
   "The body of the plot command."
   [options files body]
   (doseq [filename files]
-    (view (histogram
-           (read-length-hist filename)
+    (let [hist (histogram
+           (read-lengths filename)
            :x-label "read length (nt)"
            :y-label "frequency"
-           :title   (str "Read Lengths for " filename)))))
+           :title   (str "Read Lengths for " filename))]
+      (if-let [output-file (:output-file options)]
+        (save hist output-file)
+        (view hist)))))
 
 (defn plot
   "The entry point for the plot command."
