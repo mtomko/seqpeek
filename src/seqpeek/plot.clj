@@ -10,6 +10,7 @@
   [args]
   (cli args
        ["-l" "--read-length" "Plot read lengths" :flag true]
+       ["-o" "--output-file" "Output file" :flag false]
        ["-h" "--help" "Display usage and quit" :flag true]))
 
 (defn read-length-hist
@@ -21,11 +22,14 @@
   "The body of the plot command."
   [options files body]
   (doseq [filename files]
-    (view (histogram
+    (let [hist (histogram
            (read-length-hist filename)
            :x-label "read length (nt)"
            :y-label "frequency"
-           :title   (str "Read Lengths for " filename)))))
+           :title   (str "Read Lengths for " filename))]
+      (if-let [output-file (:output-file options)]
+        (save hist output-file)
+        (view hist)))))
 
 (defn plot
   "The entry point for the plot command."
