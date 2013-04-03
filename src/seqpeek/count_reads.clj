@@ -21,28 +21,27 @@
           (nil? ub) (fn [x] (>= (count x) lb))
           :else (fn [x] (and (<= (count x) ub) (>= (count x) lb))))))
 
-(defn count-matching-reads
+(defn count-matching-seqs
   "Counts reads in the sequence matching the provided filter"
   [pred coll]
   (count (filter pred coll)))
 
-(defn- count-matching-reads-in-file
+(defn- count-matching-reads
   "Counts reads in the input file matching the provided filter."
-  [seqfilter filename]
-  (let [rec (fastq-seq-over filename)
-        sequences (map :seq rec)]
-    (count-matching-reads seqfilter sequences)))
+  [seqfilter coll]
+  (let [sequences (map :seq coll)]
+    (count-matching-seqs seqfilter sequences)))
 
 (defn- count-reads*
   "The body of the count-reads command."
   [options files body]
   (let [seqfilter (build-filter options)
-          print-filenames (< 1 (count files))]
-      (doseq [filename files]
-        (when print-filenames
-          (println (str filename ": "))
-          (print "\t"))
-        (println (count-matching-reads-in-file seqfilter filename)))))
+        print-filenames (< 1 (count files))]
+    (doseq [filename files]
+      (when print-filenames
+        (println (str filename ": "))
+        (print "\t"))
+      (println (count-matching-reads seqfilter (fastq-seq-over filename))))))
 
 (defn count-reads
   "The entry point for the count-reads command."
