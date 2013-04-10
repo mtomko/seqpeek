@@ -20,7 +20,7 @@
 
 (defn- plot-body
   "The body of the plot command."
-  [options files body]
+  [options files]
   (doseq [filename files]
     (let [hist (histogram
            (read-lengths filename)

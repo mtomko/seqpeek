@@ -8,4 +8,4 @@
     (when (:help options)
       (println banner)
       (System/exit 0))
-    (body options files banner)))
+    (body options files)))
