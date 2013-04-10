@@ -34,7 +34,7 @@
 
 (defn- count-reads*
   "The body of the count-reads command."
-  [options files body]
+  [options files]
   (let [seqfilter (build-filter options)
         print-filenames (< 1 (count files))]
     (doseq [filename files]
