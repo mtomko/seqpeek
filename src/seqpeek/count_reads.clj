@@ -10,7 +10,7 @@
   (cli args
        ["-n" "--min-length" "Filter reads by minimum length" :parse-fn #(Integer/parseInt %)]
        ["-m" "--max-length" "Filter reads by maximum length" :parse-fn #(Integer/parseInt %)]
-       ["--" "--stdin" "Read from standard input" :flag true]
+       ["-i" "--stdin" "Read from standard input" :flag true]
        ["-h" "--help" "Display usage and quit" :flag true]))
 
 (defn build-filter
@@ -30,7 +30,7 @@
 (defn- count-matching-reads
   "Counts reads in the input file matching the provided filter."
   [seqfilter coll]
-  (let [sequences (map :seq coll)]
+  (let [sequences (map :sequence coll)]
     (count-matching seqfilter sequences)))
 
 (defn- count-matching-reads-in-files
