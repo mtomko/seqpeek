@@ -1,6 +1,8 @@
 (ns seqpeek.fastq
   (:use seqpeek.file))
 
+(defrecord Fastq [id sequence qual])
+
 (defn fastq-sequences
   "Returns the second of every 4 elements in the provided 
   collection. In a FASTQ file, this corresponds to the sequences."
@@ -11,13 +13,14 @@
   "Reads a sequence of strings and returns a lazy
   list of FASTQ records represented as maps."
   [coll]
-  (map #(zipmap [:id :seq :qual] %)
-       (for [[id dna _ qual] (partition 4 coll)] 
-         [id dna qual])))
+  (for [[id sequence _ qual] (partition 4 coll)] 
+    (Fastq. id sequence qual)))
 
 (defn fastq-file-seq
   [filename]
   (-> filename file-reader line-seq fastq-seq))
+
+;(defn fastq-to-string)
 
 (defn phred-atoi
   "Returns the phred-atoi function appropriate for the given

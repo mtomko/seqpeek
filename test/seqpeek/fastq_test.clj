@@ -1,6 +1,7 @@
 (ns seqpeek.fastq-test
   (:use clojure.test
-        seqpeek.fastq))
+        seqpeek.fastq)
+  (:import seqpeek.fastq.Fastq))
 
 (def fastq-record1
   ["@TE04D:00028:00073"
@@ -28,7 +29,9 @@
     (is (= (seq (list "TAGGAAGACAGTACGTATTCTTGGTCTATATTATCTTGTGAGTACCGTGTCTTA"))
            (fastq-sequences fastq-record1))))
   (testing "seqpeek.fastq/fastq-seq")
-    (is (= (seq (list {:id "@TE04D:00028:00073"
-                       :seq "TAGGAAGACAGTACGTATTCTTGGTCTATATTATCTTGTGAGTACCGTGTCTTA"
-                       :qual ";>>BABCD@CCCB;?49919@9?@ABA>BB;<=BBB>B;;8<AA@>@@999@19"}))
+  (is (= (seq (list
+               (Fastq.
+                "@TE04D:00028:00073"
+                "TAGGAAGACAGTACGTATTCTTGGTCTATATTATCTTGTGAGTACCGTGTCTTA"
+                ";>>BABCD@CCCB;?49919@9?@ABA>BB;<=BBB>B;;8<AA@>@@999@19")))
            (fastq-seq fastq-record1))))
