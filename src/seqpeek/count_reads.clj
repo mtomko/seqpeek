@@ -1,7 +1,7 @@
 (ns seqpeek.count-reads
   (:use [clojure.tools.cli :only [cli]]
         [seqpeek.command]
-        [seqpeek.fastq :only [fastq-seq fastq-seq-over]])
+        [seqpeek.fastq :only [fastq-seq fastq-file-seq]])
   (:import [java.io BufferedReader]))
 
 (defn- parse-args
@@ -22,8 +22,8 @@
           (nil? ub) (fn [x] (>= (count x) lb))
           :else (fn [x] (and (<= (count x) ub) (>= (count x) lb))))))
 
-(defn count-matching-seqs
-  "Counts reads in the sequence matching the provided filter"
+(defn count-matching
+  "Counts reads  matching the provided filter"
   [pred coll]
   (count (filter pred coll)))
 
@@ -31,18 +31,18 @@
   "Counts reads in the input file matching the provided filter."
   [seqfilter coll]
   (let [sequences (map :seq coll)]
-    (count-matching-seqs seqfilter sequences)))
+    (count-matching seqfilter sequences)))
 
-(defn- count-reads-in-files
+(defn- count-matching-reads-in-files
   [seqfilter files]
   (let [print-filenames (< 1 (count files))]
     (doseq [filename files]
       (when print-filenames
         (println (str filename ": "))
         (print "\t"))
-      (println (count-matching-reads seqfilter (fastq-seq-over filename))))))
+      (println (count-matching-reads seqfilter (fastq-file-seq filename))))))
 
-(defn- count-reads-in-stdin
+(defn- count-matching-reads-in-stdin
   [seqfilter]
   (println (count-matching-reads
             seqfilter
@@ -53,8 +53,8 @@
   [options files]
   (let [seqfilter (build-filter options)
         print-filenames (< 1 (count files))]
-    (if (:stdin options) (count-reads-in-stdin seqfilter)
-      (count-reads-in-files seqfilter files))))
+    (if (:stdin options) (count-matching-reads-in-stdin seqfilter)
+      (count-matching-reads-in-files seqfilter files))))
 
 (defn count-reads
   "The entry point for the count-reads command."

@@ -2,8 +2,7 @@
   (:use [clojure.tools.cli :only[cli]]
         [incanter core io stats charts]
         [seqpeek.command]
-        [seqpeek.fastq :only [fastq-seq-over]]
-        [seqpeek.file :only [make-line-seq]]))
+        [seqpeek.fastq :only [fastq-file-seq]]))
 
 (defn- parse-args
   "Argument parser for the count-reads command."
@@ -16,7 +15,7 @@
 (defn read-lengths
   [filename]
   (map (comp count :seq)
-       (fastq-seq-over filename)))
+       (fastq-file-seq filename)))
 
 (defn- plot-body
   "The body of the plot command."

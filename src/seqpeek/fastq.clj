@@ -15,9 +15,9 @@
        (for [[id dna _ qual] (partition 4 coll)] 
          [id dna qual])))
 
-(defn fastq-seq-over
+(defn fastq-file-seq
   [filename]
-  (-> filename make-line-seq fastq-seq))
+  (-> filename file-reader line-seq fastq-seq))
 
 (defn phred-atoi
   "Returns the phred-atoi function appropriate for the given
