@@ -1,7 +1,11 @@
 (ns seqpeek.fastq
   (:use seqpeek.file))
 
-(defrecord Fastq [id sequence qual])
+;; Define a FASTQ record type with a toString method
+(defrecord Fastq [id sequence qual]
+  Object
+  (toString [_]
+    (str id \newline sequence \newline \+ id \newline qual)))
 
 (defn fastq-sequences
   "Returns the second of every 4 elements in the provided 
@@ -14,7 +18,7 @@
   list of FASTQ records represented as maps."
   [coll]
   (for [[id sequence _ qual] (partition 4 coll)] 
-    (Fastq. id sequence qual)))
+    (Fastq. (subs id 1) sequence qual)))
 
 (defn fastq-file-seq
   [filename]

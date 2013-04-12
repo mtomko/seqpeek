@@ -1,7 +1,8 @@
 (ns seqpeek.core
   (:use [clojure.string :only [lower-case]]
         seqpeek.count-reads
-        seqpeek.plot)
+        seqpeek.plot
+        seqpeek.sample)
   (:gen-class)) 
 
 (defn -main
@@ -14,4 +15,5 @@
   (case (lower-case command)
     "count" (count-reads args)
     "plot"  (plot args)
+    "sample" (sample args)
     (println (str "Unknown command: " command))))

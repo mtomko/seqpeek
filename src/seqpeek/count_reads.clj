@@ -48,7 +48,7 @@
             seqfilter
             (fastq-seq (line-seq (BufferedReader. *in*))))))
 
-(defn- count-reads*
+(defn- count-reads-body
   "The body of the count-reads command."
   [options files]
   (let [seqfilter (build-filter options)
@@ -59,4 +59,4 @@
 (defn count-reads
   "The entry point for the count-reads command."
   [args]
-  (command parse-args args count-reads*))
+  (command parse-args args count-reads-body))
