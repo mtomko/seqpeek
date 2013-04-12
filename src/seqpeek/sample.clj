@@ -1,8 +1,8 @@
 (ns seqpeek.sample
+  (:require [incanter.stats :as stats])
   (:use [clojure.tools.cli :only [cli]]
-        [incanter core io stats]
-        [seqpeek.fastq :only [fastq-seq]]
-        [seqpeek.file :only [make-line-seq]]))
+        [seqpeek.command]
+        [seqpeek.fastq :only [fastq-file-seq]]))
 
 (defn- parse-args
   "Argument parser for the sample-reads command."
@@ -12,5 +12,16 @@
 
 (defn sample-records
   [filename n]
-  (sample (fastq-seq-over filename) :size n :replacement false))
+  (stats/sample (fastq-file-seq filename) :size n :replacement false))
 
+(defn- sample-body
+  "The body of the sample command"
+  [options files]
+  (if-let [n (:sample-size options)]
+    (doseq [r (sample-records (first files))]
+      (println (str r)))))
+
+(defn sample
+  "The entry point for the sample command."
+  [args]
+  (command parse-args args sample-body))
