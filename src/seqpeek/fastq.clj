@@ -5,7 +5,7 @@
 (defrecord Fastq [id sequence qual]
   Object
   (toString [_]
-    (str id \newline sequence \newline \+ id \newline qual)))
+    (str \@ id \newline sequence \newline \+ id \newline qual)))
 
 (defn fastq-sequences
   "Returns the second of every 4 elements in the provided 

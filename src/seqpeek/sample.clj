@@ -8,7 +8,7 @@
   "Argument parser for the sample-reads command."
   [args]
   (cli args
-       ["-n" "--sample-size" "The number of reads to include" :flag false]))
+       ["-n" "--sample-size" "The number of reads to include" :flag false :parse-fn #(Integer/parseInt %)]))
 
 (defn sample-records
   [filename n]
@@ -18,7 +18,7 @@
   "The body of the sample command"
   [options files]
   (if-let [n (:sample-size options)]
-    (doseq [r (sample-records (first files))]
+    (doseq [r (sample-records (first files) n)]
       (println (str r)))))
 
 (defn sample
