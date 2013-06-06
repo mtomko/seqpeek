@@ -1,6 +1,6 @@
 (ns seqpeek.fastq-test
-  (:use clojure.test
-        seqpeek.fastq)
+  (:require [speclj.core :refer :all]
+            [seqpeek.fastq :refer :all])
   (:import seqpeek.fastq.Fastq))
 
 (def fastq-record1
@@ -24,14 +24,19 @@
 (def fastq-sequence
   (seq (list fastq-record1 fastq-record2 fastq-record3)))
 
-(deftest test-fastq-sequences
-  (testing "seqpeek.fastq/fastq-sequences"
-    (is (= (seq (list "TAGGAAGACAGTACGTATTCTTGGTCTATATTATCTTGTGAGTACCGTGTCTTA"))
-           (fastq-sequences fastq-record1))))
-  (testing "seqpeek.fastq/fastq-seq")
-  (is (= (seq (list
-               (Fastq.
-                "TE04D:00028:00073"
-                "TAGGAAGACAGTACGTATTCTTGGTCTATATTATCTTGTGAGTACCGTGTCTTA"
-                ";>>BABCD@CCCB;?49919@9?@ABA>BB;<=BBB>B;;8<AA@>@@999@19")))
-           (fastq-seq fastq-record1))))
+(describe "fastq-sequences"
+  (it "should extract the sequence correctly"
+    (should= (seq (list "TAGGAAGACAGTACGTATTCTTGGTCTATATTATCTTGTGAGTACCGTGTCTTA"))
+             (fastq-sequences fastq-record1))))
+
+(describe "fastq-seq"
+  (it "should extract a FASTQ record"
+    (should= (seq
+               (list
+                (Fastq.
+                  "TE04D:00028:00073"
+                  "TAGGAAGACAGTACGTATTCTTGGTCTATATTATCTTGTGAGTACCGTGTCTTA"
+                  ";>>BABCD@CCCB;?49919@9?@ABA>BB;<=BBB>B;;8<AA@>@@999@19")))
+             (fastq-seq fastq-record1))))
+
+(run-specs)
