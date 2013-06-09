@@ -1,7 +1,7 @@
-(ns seqpeek.fastq-test
+(ns seqpeek.bio-test
   (:require [speclj.core :refer :all]
-            [seqpeek.fastq :refer :all])
-  (:import seqpeek.fastq.Fastq))
+            [seqpeek.bio :refer :all])
+  (:import seqpeek.bio.Fastq))
 
 (def fastq-record1
   ["@TE04D:00028:00073"

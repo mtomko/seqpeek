@@ -1,7 +1,8 @@
 (ns seqpeek.count-reads
+  (:require [clojure.java.io :as io]
+            [seqpeek.bio :as bio])
   (:use [clojure.tools.cli :only [cli]]
-        [seqpeek.command]
-        [seqpeek.fastq :only [fastq-seq fastq-file-seq]])
+        [seqpeek.command])
   (:import [java.io BufferedReader]))
 
 (defn- parse-args
@@ -23,7 +24,7 @@
           :else (fn [x] (and (<= (count x) ub) (>= (count x) lb))))))
 
 (defn count-matching
-  "Counts reads  matching the provided filter"
+  "Counts reads matching the provided filter"
   [pred coll]
   (count (filter pred coll)))
 
@@ -40,15 +41,15 @@
       (when print-filenames
         (println (str filename ": "))
         (print "\t"))
-      (println (count-matching-reads seqfilter (fastq-file-seq filename))))))
+      (println (count-matching-reads seqfilter (bio/fastq-file-seq filename))))))
 
 (defn- count-matching-reads-in-stdin
   [seqfilter]
   (println (count-matching-reads
             seqfilter
-            (fastq-seq (line-seq (BufferedReader. *in*))))))
+            (bio/fastq-seq (line-seq (io/reader *in*))))))
 
-(defn- count-reads-body
+(defn- count-reads-command
   "The body of the count-reads command."
   [options files]
   (let [seqfilter (build-filter options)
@@ -59,4 +60,4 @@
 (defn count-reads
   "The entry point for the count-reads command."
   [args]
-  (command parse-args args count-reads-body))
+  (command parse-args args count-reads-command))
