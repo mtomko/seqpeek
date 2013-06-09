@@ -1,5 +1,5 @@
-(ns seqpeek.fastq
-  (:use seqpeek.file))
+(ns seqpeek.bio
+  (:require [clojure.java.io :as io]))
 
 ;; Define a FASTQ record type with a toString method
 (defrecord Fastq [id sequence qual]
@@ -8,7 +8,7 @@
     (str \@ id \newline sequence \newline \+ id \newline qual)))
 
 (defn fastq-sequences
-  "Returns the second of every 4 elements in the provided 
+  "Returns the second of every 4 elements in the provided
   collection. In a FASTQ file, this corresponds to the sequences."
   [coll]
   (take-nth 4 (drop 1 coll)))
@@ -17,14 +17,12 @@
   "Reads a sequence of strings and returns a lazy
   list of FASTQ records represented as maps."
   [coll]
-  (for [[id sequence _ qual] (partition 4 coll)] 
+  (for [[id sequence _ qual] (partition 4 coll)]
     (Fastq. (subs id 1) sequence qual)))
 
 (defn fastq-file-seq
   [filename]
-  (-> filename file-reader line-seq fastq-seq))
-
-;(defn fastq-to-string)
+  (-> filename io/reader line-seq fastq-seq))
 
 (defn phred-atoi
   "Returns the phred-atoi function appropriate for the given
