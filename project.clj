@@ -4,7 +4,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :repositories [["biojava" "http://biojava.org/download/maven/"]]
-  :dependencies [[incanter "1.4.1"]
+  :dependencies [[incanter "1.5.0"]
                  [org.clojure/clojure "1.5.1"]
                  [org.clojure/tools.cli "0.2.2"]]
                  ;[org.biojava/biojava3-core "3.0.5"]
