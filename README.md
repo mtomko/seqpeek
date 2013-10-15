@@ -8,6 +8,7 @@ but support is planned for other file formats.
 Download from http://github.com/mtomko/seqpeek
 
 Run:
+
     $ lein uberjar
     $ make-sh.sh
 
