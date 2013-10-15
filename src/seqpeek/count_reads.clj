@@ -1,27 +1,21 @@
 (ns seqpeek.count-reads
   (:require [clojure.java.io :as io]
-            [seqpeek.bio :as bio])
+            [seqpeek.bio :as bio]
+            [seqpeek.filter :as filter])
   (:use [clojure.tools.cli :only [cli]]
         [seqpeek.command])
   (:import [java.io BufferedReader]))
 
+(def count-reads-args
+  (conj
+    filter/filter-args
+    [["-i" "--stdin" "Read from standard input" :flag true]
+     ["-h" "--help" "Display usage and quit" :flag true]]))
+
 (defn- parse-args
   "Argument parser for the count-reads command."
   [args]
-  (cli args
-       ["-n" "--min-length" "Filter reads by minimum length" :parse-fn #(Integer/parseInt %)]
-       ["-m" "--max-length" "Filter reads by maximum length" :parse-fn #(Integer/parseInt %)]
-       ["-i" "--stdin" "Read from standard input" :flag true]
-       ["-h" "--help" "Display usage and quit" :flag true]))
-
-(defn build-filter
-  "Creates a filter predicate based on the provided options."
-  [options]
-  (let [[lb ub] [(:min-length options) (:max-length options)]]
-    (cond (and (nil? ub) (nil? lb)) (fn [_] true)
-          (nil? lb) (fn [x] (<= (count x) ub))
-          (nil? ub) (fn [x] (>= (count x) lb))
-          :else (fn [x] (and (<= (count x) ub) (>= (count x) lb))))))
+  (cli args count-reads-args))
 
 (defn count-matching
   "Counts reads matching the provided filter"
@@ -52,7 +46,7 @@
 (defn- count-reads-command
   "The body of the count-reads command."
   [options files]
-  (let [seqfilter (build-filter options)
+  (let [seqfilter (filter/build-filter options)
         print-filenames (< 1 (count files))]
     (if (:stdin options) (count-matching-reads-in-stdin seqfilter)
       (count-matching-reads-in-files seqfilter files))))

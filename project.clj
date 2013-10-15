@@ -6,6 +6,7 @@
   :repositories [["biojava" "http://biojava.org/download/maven/"]]
   :dependencies [[incanter "1.5.1"]
                  [org.clojure/clojure "1.5.1"]
+                 [org.clojure/core.match "0.2.0"]
                  [org.clojure/tools.cli "0.2.2"]]
                  ;[org.biojava/biojava3-core "3.0.5"]
                  ;[org.biojava/biojava3-sequencing "3.0.5"]]
