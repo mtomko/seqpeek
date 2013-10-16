@@ -1,6 +1,6 @@
-(ns seqpeek.filter_test
+(ns seqpeek.filter_reads_test
   (:require [speclj.core :refer :all]
-            [seqpeek.filter :refer :all]))
+            [seqpeek.filter-reads :refer :all]))
 
 (describe "build-filter"
   (it "should not filter when given no criteria"

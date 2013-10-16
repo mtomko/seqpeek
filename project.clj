@@ -13,4 +13,5 @@
   :profiles {:dev {:dependencies [[speclj "2.5.0"]]}}
   :plugins [[speclj "2.5.0"]]
   :test-paths ["spec/"]
+  :aot :all
   :main seqpeek.core)

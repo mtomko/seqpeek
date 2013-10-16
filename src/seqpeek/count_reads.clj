@@ -1,7 +1,7 @@
 (ns seqpeek.count-reads
   (:require [clojure.java.io :as io]
             [seqpeek.bio :as bio]
-            [seqpeek.filter :as filter])
+            [seqpeek.filter-reads :as filter])
   (:use [clojure.tools.cli :only [cli]]
         [seqpeek.command])
   (:import [java.io BufferedReader]))
@@ -15,7 +15,7 @@
 (defn- parse-args
   "Argument parser for the count-reads command."
   [args]
-  (cli args count-reads-args))
+  (apply cli args count-reads-args))
 
 (defn count-matching
   "Counts reads matching the provided filter"

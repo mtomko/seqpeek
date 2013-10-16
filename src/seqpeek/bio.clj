@@ -1,4 +1,5 @@
 (ns seqpeek.bio
+  (:import java.util.zip.GZIPInputStream)
   (:require [clojure.java.io :as io]))
 
 ;; Define a FASTQ record type with a toString method
@@ -20,9 +21,16 @@
   (for [[id sequence _ qual] (partition 4 coll)]
     (Fastq. (subs id 1) sequence qual)))
 
+(defn- maybe-gz-file-stream
+  [filename]
+  (if (.endsWith (.toLowerCase filename) ".gz")
+    (io/reader
+      (GZIPInputStream. (io/input-stream filename)))
+    (io/reader filename)))
+
 (defn fastq-file-seq
   [filename]
-  (-> filename io/reader line-seq fastq-seq))
+  (-> filename maybe-gz-file-stream line-seq fastq-seq))
 
 (defn phred-atoi
   "Returns the phred-atoi function appropriate for the given

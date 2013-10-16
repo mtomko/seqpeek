@@ -1,9 +1,11 @@
 (ns seqpeek.core
-  (:use [clojure.string :only [lower-case]]
+  (:use [clojure.core.match :only [match]]
+        [clojure.string :only [lower-case]]
         seqpeek.count-reads
+        seqpeek.filter-reads
         seqpeek.plot
         seqpeek.sample)
-  (:gen-class)) 
+  (:gen-class))
 
 (defn -main
   "The main entry point for seqpeek"
@@ -12,8 +14,9 @@
   (alter-var-root #'*read-eval* (constantly false))
 
   ;; decipher the command and dispatch to the appropriate authority
-  (case (lower-case command)
-    "count" (count-reads args)
-    "plot"  (plot args)
-    "sample" (sample args)
-    (println (str "Unknown command: " command))))
+  (match [(lower-case command)]
+    ["count"]   (count-reads args)
+    ["filter"]  (filter-reads args)
+    ["plot"]    (plot args)
+    ["sample"]  (sample args)
+    [_]         (println (str "Unknown command: " command))))
