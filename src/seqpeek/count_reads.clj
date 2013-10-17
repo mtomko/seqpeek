@@ -6,16 +6,15 @@
         [seqpeek.command])
   (:import [java.io BufferedReader]))
 
-(def count-reads-args
-  (conj
-    filter/filter-args
-    [["-i" "--stdin" "Read from standard input" :flag true]
-     ["-h" "--help" "Display usage and quit" :flag true]]))
-
 (defn- parse-args
   "Argument parser for the count-reads command."
   [args]
-  (apply cli args count-reads-args))
+  (cli
+   args
+   ["-n" "--min-length" "Filter reads by minimum length" :parse-fn #(Integer/parseInt %)]
+   ["-m" "--max-length" "Filter reads by maximum length" :parse-fn #(Integer/parseInt %)]
+   ["-i" "--stdin" "Read from standard input" :flag true]
+   ["-h" "--help" "Display usage and quit" :flag true]))
 
 (defn count-matching
   "Counts reads matching the provided filter"

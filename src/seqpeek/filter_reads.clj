@@ -6,14 +6,13 @@
         [clojure.tools.cli :only [cli]]
         [seqpeek.command]))
 
-(def filter-args
-  [["-n" "--min-length" "Filter reads by minimum length" :parse-fn #(Integer/parseInt %)]
-   ["-m" "--max-length" "Filter reads by maximum length" :parse-fn #(Integer/parseInt %)]])
-
 (defn- parse-args
   "Argument parser for the filter-reads command"
   [args]
-  (apply cli args filter-args))
+  (cli
+   args
+   ["-n" "--min-length" "Filter reads by minimum length" :parse-fn #(Integer/parseInt %)]
+   ["-m" "--max-length" "Filter reads by maximum length" :parse-fn #(Integer/parseInt %)]))
 
 (defn build-filter
   "Creates a filter predicate based on the provided options."
@@ -25,7 +24,7 @@
            [[lb ub]]   (fn [s] (and (>= (count s) lb)
                                     (<= (count s) ub)))))
 
-(defn- filter-reads
+(defn- filter-reads-in-coll
   [pred coll]
   (let [matching (filter pred coll)]
     (doseq [rec matching]
@@ -34,7 +33,7 @@
 (defn- filter-reads-in-file
   [pred file]
   (let [fileseq (bio/fastq-file-seq file)]
-    (filter-reads pred fileseq)))
+    (filter-reads-in-coll pred fileseq)))
 
 (defn- filter-reads-command
   "The body of the filter-reads command"
